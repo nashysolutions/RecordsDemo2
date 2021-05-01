@@ -1,1 +1,11 @@
-# RecordsDemo2
+# DemoApp
+
+![](https://img.shields.io/badge/platform-iOS-blue)
+![](https://img.shields.io/badge/swift-5.3-blue)
+
+A demo implementation of the [Records](https://github.com/nashysolutions/Records) package.
+
+### To Compile
+
+Either install [Sourcery](https://github.com/krzysztofzablocki/Sourcery) or just remove the build phase.
+
