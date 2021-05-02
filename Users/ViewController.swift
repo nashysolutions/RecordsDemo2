@@ -27,7 +27,7 @@ final class ViewController: UIViewController {
     // new records will be inserted if more data found over network
     // local records will not be deleted if nothing found over network
     private func fetchParseSaveLoad() {
-        let context = Storage.sharedInstance.persistentContainer.viewContext
+        let context = Storage.sharedInstance.context
         try! JSONUser.archive(in: context)
         try! userController.reload()
     }

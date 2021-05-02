@@ -3,7 +3,11 @@ import CoreData
 
 final class Storage {
     
-    let persistentContainer: NSPersistentContainer
+    var context: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+    
+    private let persistentContainer: NSPersistentContainer
     
     static let sharedInstance = Storage()
     
@@ -13,24 +17,13 @@ final class Storage {
 }
 
 private final class StackBuilder {
-    
-    private let modelName = "Users"
-    
-    public enum Configuration {
-        case temporary
-        case permanent
-    }
-    
-    let configuration: Configuration
-    
-    public init(_ configuration: Configuration = .permanent) {
-        self.configuration = configuration
-    }
+        
+    private static let modelName = "Users"
     
     public func load() throws -> NSPersistentContainer {
         var errors = [Error]()
-        let persistentContainer = PersistentContainer(name: modelName)
-        persistentContainer.persistentStoreDescriptions = [description(for: configuration)]
+        let persistentContainer = NSPersistentContainer(name: StackBuilder.modelName)
+        persistentContainer.persistentStoreDescriptions = [description]
         persistentContainer.loadPersistentStores { (value, error) in
             if error != nil {
                 errors.append(error!)
@@ -42,23 +35,18 @@ private final class StackBuilder {
         return persistentContainer as NSPersistentContainer
     }
     
-    private func description(for configuration: Configuration) -> NSPersistentStoreDescription {
-        let desc = NSPersistentStoreDescription(url: storeURL)
-        switch configuration {
-        case .temporary:
-            desc.type = NSInMemoryStoreType
-        case .permanent:
-            desc.shouldInferMappingModelAutomatically = true
-            desc.shouldMigrateStoreAutomatically = true
-            desc.type = NSSQLiteStoreType
-        }
+    private let description: NSPersistentStoreDescription = {
+        let folder = try! FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        )
+        let url = folder.appendingPathComponent(StackBuilder.modelName + ".sqlite")
+        let desc = NSPersistentStoreDescription(url: url)
+        desc.shouldInferMappingModelAutomatically = true
+        desc.shouldMigrateStoreAutomatically = true
+        desc.type = NSSQLiteStoreType
         return desc
-    }
-    
-    private var storeURL: URL {
-        let folderURL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        return folderURL.appendingPathComponent(modelName + ".sqlite")
-    }
+    }()
 }
-
-private final class PersistentContainer: NSPersistentContainer {}
