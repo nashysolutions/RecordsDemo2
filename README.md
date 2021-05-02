@@ -9,3 +9,6 @@ A demo implementation of the [Records](https://github.com/nashysolutions/Records
 
 Either install [Sourcery](https://github.com/krzysztofzablocki/Sourcery) or just remove the build phase.
 
+### Sourcery
+
+This project includes a [template file](https://github.com/nashysolutions/RecordsDemo2/blob/main/Users/Stencils/ManagedObjectQuery.stencil) which you will need to copy, when configuring Sourcery in your project.
